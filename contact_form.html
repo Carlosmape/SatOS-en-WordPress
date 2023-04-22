@@ -1,0 +1,52 @@
+<form method="post" onload="generateCaptcha()" onsubmit="return validateCaptcha()">
+	<input type="hidden" name="data" value="">
+	<label>Nombre
+		<input type="text" name="nombre" value="" required>
+	</label>
+	<label>Email
+		<input type="text" name="email" value="" required>
+	</label>
+	<label>Albarán
+
+		<input type="text" name="albaran" value="" required>
+	</label>
+	<label>Asunto
+		<input type="text" name="asunto" value="" required>
+	</label>
+	<label>Mensaje
+		<textarea name="mensaje" required></textarea>
+	</label>
+	<label class="captcha">
+		<div id="imageCaptcha" selectable="False"></div>
+		<div onclick="generateCaptcha()"><i class="fas fa-sync"></i></div>
+		<input type="text" id="submitCaptcha" value="" required>
+	</label>
+	<input type="submit" value="Enviar">
+</form>
+<script>
+	var captcha;
+	function generateCaptcha() {
+		document.getElementById("submitCaptcha").value = "";
+		captcha = document.getElementById("imageCaptcha");
+		var uniquechar = "";
+		const randomchar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456788";
+
+		for (let i = 0; i < 5; i++) {
+			uniquechar += randomchar.charAt(
+				Math.random() * randomchar.length)
+		}
+		captcha.innerHTML = uniquechar;
+	}
+
+	function validateCaptcha() {
+		const usr_input = document.getElementById("submitCaptcha").value;
+
+		if (usr_input == captcha.innerHTML) {
+			return true;
+		}
+		else {
+			generateCaptcha();
+			return false;
+		}
+	}
+</script>
