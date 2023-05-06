@@ -1,55 +1,59 @@
 <script>
+	function sendContactFormEmail() {
+		var form = document.querySelector('#contact-form');
 
-function sendContactFormEmail() {
-  // Get form data
-  var name = document.getElementById('name').value;
-  var email = document.getElementById('email').value;
-  var subject = document.getElementById('subject').value;
-  var order_number = document.getElementById('order_number').value;
-  var message = document.getElementById('message').value;
+		if (!form.reportValidity()){
+			return;
+		}
 
-  // Build request data
-  var requestData = {
-    'name': name,
-    'email': email,
-    'subject': subject,
-    'order_number': order_number,
-    'message': message
-  };
+		// Get form data
+		var name = document.getElementById('name').value;
+		var email = document.getElementById('email').value;
+		var subject = document.getElementById('subject').value;
+		var order_number = document.getElementById('order_number').value;
+		var message = document.getElementById('message').value;
 
-  // Send request
-  fetch('/wp-json/contact-form/send-email', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(requestData)
-  })
-  .then(function(response) {
-    if (!response.ok) {
-      throw Error(response.statusText);
-    }
-    return response.json();
-  })
-  .then(function(data) {
-    if (data.success) {
-      document.getElementById('name').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('subject').value = '';
-      document.getElementById('order_number').value = '';
-      document.getElementById('message').value = '';
-    } else {
-      throw Error(data.error);
-    }
-  })
-  .catch(function(error) {
-    alert(error);
-  });
-}
+		// Build request data
+		var requestData = {
+			'name': name,
+			'email': email,
+			'subject': subject,
+			'order_number': order_number,
+			'message': message
+		};
+
+		// Send request
+		fetch('/wp-json/contact-form/send-email', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(requestData)
+		})			.then(function(response) {
+			if (!response.ok) {
+				throw Error(response.statusText);
+			}
+			return response.json();
+		})
+			.then(function(data) {
+				if (data.success) {
+					document.getElementById('name').value = '';
+					document.getElementById('email').value = '';
+					document.getElementById('subject').value = '';
+					document.getElementById('order_number').value = '';
+					document.getElementById('message').value = '';
+				} else {
+					throw Error(data.error);
+				}
+			})
+			.catch(function(error) {
+				alert(error);
+			});
+	}
 
 </script>
 
-<form>
+<form id="contact-form">
 	<label for="name">Name</label>
 	<input type="text" id="name" required>
 
