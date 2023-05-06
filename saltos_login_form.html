@@ -1,10 +1,11 @@
-<form action="https://saltos.abcustom.es:8443/" method="post"> 
+<form action="%SALTOS_HOST%" method="post"> 
 	<input name="action" value="login" type="hidden">
-	<label>Usuario
-		<input class="user" type="text" name="user" value="" required>
-	</label>
-	<label>Contraseña
-		<input class="pass" type="password" name="pass" value="" required>
-	</label>
-	<input type="submit" value="Acceder">
+
+	<label for="user">User<label>
+	<input class="user" type="text" name="user" value="" required>
+
+	<label for="pass">Password</label>
+	<input class="pass" type="password" name="pass" value="" required>
+	
+	<input type="submit" value="Log In">
 </form>

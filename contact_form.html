@@ -1,52 +1,69 @@
-<form method="post" onload="generateCaptcha()" onsubmit="return validateCaptcha()">
-	<input type="hidden" name="data" value="">
-	<label>Nombre
-		<input type="text" name="nombre" value="" required>
-	</label>
-	<label>Email
-		<input type="text" name="email" value="" required>
-	</label>
-	<label>Albarán
-
-		<input type="text" name="albaran" value="" required>
-	</label>
-	<label>Asunto
-		<input type="text" name="asunto" value="" required>
-	</label>
-	<label>Mensaje
-		<textarea name="mensaje" required></textarea>
-	</label>
-	<label class="captcha">
-		<div id="imageCaptcha" selectable="False"></div>
-		<div onclick="generateCaptcha()"><i class="fas fa-sync"></i></div>
-		<input type="text" id="submitCaptcha" value="" required>
-	</label>
-	<input type="submit" value="Enviar">
-</form>
 <script>
-	var captcha;
-	function generateCaptcha() {
-		document.getElementById("submitCaptcha").value = "";
-		captcha = document.getElementById("imageCaptcha");
-		var uniquechar = "";
-		const randomchar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456788";
 
-		for (let i = 0; i < 5; i++) {
-			uniquechar += randomchar.charAt(
-				Math.random() * randomchar.length)
-		}
-		captcha.innerHTML = uniquechar;
-	}
+function sendContactFormEmail() {
+  // Get form data
+  var name = document.getElementById('name').value;
+  var email = document.getElementById('email').value;
+  var subject = document.getElementById('subject').value;
+  var order_number = document.getElementById('order_number').value;
+  var message = document.getElementById('message').value;
 
-	function validateCaptcha() {
-		const usr_input = document.getElementById("submitCaptcha").value;
+  // Build request data
+  var requestData = {
+    'name': name,
+    'email': email,
+    'subject': subject,
+    'order_number': order_number,
+    'message': message
+  };
 
-		if (usr_input == captcha.innerHTML) {
-			return true;
-		}
-		else {
-			generateCaptcha();
-			return false;
-		}
-	}
+  // Send request
+  fetch('/wp-json/contact-form/send-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestData)
+  })
+  .then(function(response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
+    }
+    return response.json();
+  })
+  .then(function(data) {
+    if (data.success) {
+      document.getElementById('name').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('subject').value = '';
+      document.getElementById('order_number').value = '';
+      document.getElementById('message').value = '';
+    } else {
+      throw Error(data.error);
+    }
+  })
+  .catch(function(error) {
+    alert(error);
+  });
+}
+
 </script>
+
+<form>
+	<label for="name">Name</label>
+	<input type="text" id="name" required>
+
+	<label for="email">Email</label>
+	<input type="email" id="email" required>
+
+	<label for="order-number">Order Number</label>
+	<input type="text" id="order_number" required>
+
+	<label for="subject">Subject</label>
+	<input type="text" id="subject" required>
+
+	<label for="message">Message</label>
+	<textarea id="message" rows="4" required></textarea>
+
+	<button type="button" onclick="sendContactFormEmail()">Send</button>
+</form>

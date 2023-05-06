@@ -9,21 +9,33 @@ function saltos_admin_init() {
 	// Register a new section in the "saltos_wp" page.
 	add_settings_section(
 		PLUGIN_SECTION_DB,
-		__( 'Configure SaltOS instance', PLUGIN_NAME ), 'saltos_settings_section',
+		__( 'Configure SaltOS instance', PLUGIN_NAME ),
+	   	'saltos_settings_section',
 		PLUGIN_NAME
 	);
 
 	// ADD FIELDS FOR DB CONNECTION //
+	add_settings_field(
+		SALTOS_URL_OPTION,
+		__( 'SaltOS URL', PLUGIN_NAME ),
+		'saltos_render_input',
+		PLUGIN_NAME, PLUGIN_SECTION_DB,
+		array(
+			'type'	=> 'text',
+			'name'	=> SALTOS_URL_OPTION,
+			'desc'	=> 'The URL where your SaltOS platform runs. Where you connect to the platform'
+		)
+	);
 
 	add_settings_field(
 		DB_HOST_OPTION,
-		__( 'Host', PLUGIN_NAME ),
+		__( 'DB Host', PLUGIN_NAME ),
 		'saltos_render_input',
 		PLUGIN_NAME, PLUGIN_SECTION_DB,
 		array(
 			'type'	=> 'text',
 			'name'	=> DB_HOST_OPTION,
-			'desc'	=> 'Indicates the IP or URL where your SaltOS DB runs'
+			'desc'	=> 'Indicates the IP or URL where your SaltOS DB platform runs'
 		)
 	);
 
@@ -55,24 +67,63 @@ function saltos_admin_init() {
 
 	add_settings_field(
 		DB_PWD_OPTION,
-		__( 'User', PLUGIN_NAME ),
+		__( 'Password', PLUGIN_NAME ),
 		'saltos_render_input',
 		PLUGIN_NAME,
 		PLUGIN_SECTION_DB,
 		array(
 			'type'	=> 'password',
 			'name'  => DB_PWD_OPTION,
-			'desc'	=> 'Password'
+			'desc'	=> 'DB Password'
 		)
 	);
+	
+	// Register a new section in the "saltos_wp" page.
+	add_settings_section(
+		PLUGIN_SECTION_CF,
+		__( 'Configure Contact Form'), 'saltos_settings_section',
+		PLUGIN_NAME
+	);
+	add_settings_field(
+		CF_MAIL_OPTION,
+		__( 'Contact form e-mail', PLUGIN_NAME ),
+		'saltos_render_input',
+		PLUGIN_NAME, PLUGIN_SECTION_CF,
+		array(
+			'type'	=> 'email',
+			'name'	=> CF_MAIL_OPTION,
+			'desc'	=> 'Indicates the e-mail of the company Costumer Atention Service for the contact formulary'
+		)
+	);
+	add_settings_field(
+		CF_SUBJECT_OPTION,
+		__( 'Contact form subject', PLUGIN_NAME ),
+		'saltos_render_input',
+		PLUGIN_NAME, PLUGIN_SECTION_CF,
+		array(
+			'type'	=> 'text',
+			'name'	=> CF_SUBJECT_OPTION,
+			'desc'	=> 'Indicates a text to insert in the Subject of the mails sent from the contact form'
+		)
+	);
+
 }
 add_action( 'admin_init', 'saltos_admin_init' );
 
 
-
 function saltos_settings_section( $args ) {
 ?>
-	<p id="<?php echo esc_attr( $args['id'] ); ?>"><?php esc_html_e( 'Define all neede setting to connect with you SaltOS server instance.', PLUGIN_NAME ); ?></p>
+	<p id="<?php echo esc_attr( $args['id'] ); ?>">
+
+<?php
+	if ($args['id'] == PLUGIN_SECTION_DB) {
+		esc_html_e( 'You can use following shortcodes: ['.LOGIN_SHORTCODE.'] and ['.TRACKING_SHORTCODE.']', PLUGIN_NAME ); 
+	}
+	else if ($args['id'] == PLUGIN_SECTION_CF) {
+		esc_html_e( 'You can use following shortcode: ['.CONTACT_SHORTCODE.']', PLUGIN_NAME ); 
+	}
+?>
+</p>
 <?php
 }
 
